@@ -34,9 +34,9 @@ export function next(state) {
   });
 }
 
-export function vote(state, entry) {
-  if (state.getIn(["vote", "pair"]).includes(entry)) {
-    return state.updateIn(["vote", "tally", entry], 1, (tally) => tally + 1);
-  }
+export function vote(vote, entry) {
+  if (vote.includes(entry)) {
+    return vote.updateIn(["tally", entry], 0, (tally) => tally + 1);
+  } 
   return state;
 }
