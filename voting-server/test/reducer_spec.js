@@ -11,23 +11,23 @@ describe("reducer", () => {
       entries: ["Trainspotting", "28 Days Later"],
     });
     expect(nextState).to.equal(
-      Map({
+      fromJS({
         entries: ["Trainspotting", "28 Days Later"],
       })
     );
   });
 
   it("handles NEXT", () => {
-    const state = Map({
+    const state = fromJS({
       entries: ["m1", "m2", "m3"],
     });
     const nextState = reducer(state, { type: "NEXT" });
     expect(nextState).to.equal(
-      Map({
+      fromJS({
         entries: ["m3"],
-        vote: Map({
+        vote: {
           pair: ["m1", "m2"],
-        }),
+        },
       })
     );
   });
@@ -59,7 +59,7 @@ describe("reducer", () => {
   it('has an initial state', () => {
     const nextState = reducer(undefined, { type: 'SET_ENTRIES', entries: ['m1'] });
     expect(nextState).to.equal(fromJS({
-      entries: ['Trainspotting']
+      entries: ['m1']
     }));
   });
 

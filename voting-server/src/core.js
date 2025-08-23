@@ -7,13 +7,13 @@ export function setEntries(state, entries) {
 }
 
 function getWinner(vote) {
-  if (!vote) return null;
+  if (!vote || !vote.has("pair")) return [];
   const [a, b] = vote.get("pair");
-  if (vote.getIn(["tally", a, 0]) > vote.getIn(["tally", b, 0])) {
-    return a;
+  if (vote.getIn(["tally", a], 0) > vote.getIn(["tally", b], 0)) {
+    return [a];
   }
-  if (vote.getIn(["tally", b, 0]) > vote.getIn(["tally", a, 0])) {
-    return b;
+  if (vote.getIn(["tally", b], 0) > vote.getIn(["tally", a], 0)) {
+    return [b];
   }
   return [a, b];
 }
@@ -27,7 +27,7 @@ export function next(state) {
       .set("winner", entries.first());
   }
   return state.merge({
-    pair: Map({
+    vote: Map({
       pair: entries.take(2),
     }),
     entries: entries.skip(2),
@@ -35,8 +35,8 @@ export function next(state) {
 }
 
 export function vote(vote, entry) {
-  if (vote.includes(entry)) {
-    return vote.updateIn(["tally", entry], 0, (tally) => tally + 1);
+  if (vote && vote.get("pair").includes(entry)) {
+    return vote.updateIn(['tally', entry], 0, (tally) => tally + 1);
   } 
-  return state;
+  return vote;
 }

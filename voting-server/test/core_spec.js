@@ -1,6 +1,6 @@
-import { List, Map } from "immutable";
+import { fromJS, List, Map } from "immutable";
 import { expect } from "chai";
-import { setEntries, next } from "../src/core";
+import { setEntries, next, vote } from "../src/core";
 
 describe("application logic", () => {
   describe("setEntries", () => {
@@ -108,7 +108,6 @@ describe("application logic", () => {
     it("ends the vote immediately when there is only one entry", () => {
       const state = Map({
         entries: List.of("1"),
-        vote: Map(),
       });
       const nextState = next(state);
       expect(nextState).to.equal(
@@ -119,58 +118,46 @@ describe("application logic", () => {
     });
   });
 
-  it("e");
-
   describe("vote", () => {
     it("creates a new tally", () => {
       const state = Map({
-        vote: Map({
-          pair: List.of("Trainspotting", "28 Days Later"),
-        }),
+        pair: List.of("Trainspotting", "28 Days Later"),
       });
       const nextState = vote(state, "28 Days Later");
       expect(nextState).to.equal(
         Map({
-          vote: Map({
-            pair: List.of("Trainspotting", "28 Days Later"),
-            tally: Map({
+          pair: List.of("Trainspotting", "28 Days Later"),
+          tally: Map({
               "28 Days Later": 1,
-            }),
-          }),
+          })
         })
       );
     });
 
     it("increments the existing tally", () => {
       const state = Map({
-        vote: Map({
           pair: List.of("Trainspotting", "28 Days Later"),
           tally: Map({
             "28 Days Later": 1,
-          }),
         }),
       });
       const nextState = vote(state, "28 Days Later");
       expect(nextState).to.equal(
         Map({
-          vote: Map({
             pair: List.of("Trainspotting", "28 Days Later"),
             tally: Map({
               "28 Days Later": 2,
             }),
-          }),
-        })
+        }),
       );
     });
 
     it("does not create a new tally for entries not in the pair", () => {
       const state = Map({
-        vote: Map({
           pair: List.of("Trainspotting", "28 Days Later"),
           tally: Map({
             "28 Days Later": 1,
           }),
-        }),
       });
       const nextState = vote(state, "Sunshine");
       expect(nextState).to.equal(state);
@@ -178,12 +165,10 @@ describe("application logic", () => {
 
     it("does not increment the tally for entries not in the pair", () => {
       const state = Map({
-        vote: Map({
           pair: List.of("Trainspotting", "28 Days Later"),
           tally: Map({
             "28 Days Later": 1,
           }),
-        }),
       });
       const nextState = vote(state, "Sunshine");
       expect(nextState).to.equal(state);
